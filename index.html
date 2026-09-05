@@ -24,8 +24,6 @@
         .hero { text-align: center; padding: 40px 0 20px 0; }
         .hero h1 { font-size: 2.6rem !important; border-bottom: none !important; margin-bottom: 10px !important; }
         .hero p { font-size: 1.2rem; color: #666; }
-        .hero .badges { margin-top: 20px; }
-        .hero .badges img { margin: 0 6px; }
     </style>
 </head>
 <body>
@@ -35,17 +33,15 @@
     window.$docsify = {
         name: 'ProTray 外贸知识库',
         nameLink: '/',
-        repo: 'https://github.com/你的用户名/仓库名',
+        repo: 'https://github.com/mcqwy/ProTray-Knowledge-Base',
         loadSidebar: '_sidebar.md',
-        subMaxLevel: 1,
+        subMaxLevel: 0,
         auto2top: true,
         hashbang: false,
-        notFoundPage: true,
         search: {
             placeholder: '🔍 搜索文档...',
             noData: '😅 没有找到相关内容',
             depth: 3,
-            hideOtherSidebarContent: false,
             namespace: 'ProTray-Knowledge'
         },
         navbar: [
@@ -58,14 +54,51 @@
         ],
         sidebar: { '/': '_sidebar.md' },
         themeColor: '#42b983',
-        ga: '',
         formatUpdated: '{YYYY}-{MM}-{DD} {HH}:{mm}',
         relativePath: true,
+
+        // ===== 核心：拦截 404 请求，静默返回空内容 =====
         plugins: [
             function(hook, vm) {
-                hook.doneEach(function() {
-                    // console.log('页面加载完成:', vm.route.path);
+                // 拦截 fetch 请求，对 _sidebar.md 和 README.md 的 404 静默处理
+                hook.beforeEach(function(content) {
+                    return content;
                 });
+
+                // 在 Docsify 加载完成后，拦截 XMLHttpRequest
+                var originalOpen = XMLHttpRequest.prototype.open;
+                XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
+                    var self = this;
+                    var originalOnReadyStateChange = this.onreadystatechange;
+
+                    this.onreadystatechange = function() {
+                        // 如果请求的是 _sidebar.md 或 README.md，且返回 404
+                        if (this.readyState === 4 && this.status === 404) {
+                            var urlStr = url.toString();
+                            if (urlStr.includes('_sidebar.md') || urlStr.includes('README.md')) {
+                                // 返回空内容，不触发错误
+                                Object.defineProperty(this, 'responseText', {
+                                    value: '',
+                                    writable: false
+                                });
+                                Object.defineProperty(this, 'response', {
+                                    value: '',
+                                    writable: false
+                                });
+                                // 模拟 200 状态，让 Docsify 认为文件存在但为空
+                                Object.defineProperty(this, 'status', {
+                                    value: 200,
+                                    writable: false
+                                });
+                            }
+                        }
+                        if (originalOnReadyStateChange) {
+                            originalOnReadyStateChange.apply(this, arguments);
+                        }
+                    };
+
+                    return originalOpen.apply(this, arguments);
+                };
             }
         ]
     };
@@ -83,7 +116,6 @@
 <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
 
 <script>
-    window.$docsify = window.$docsify || {};
     window.$docsify.plugins = (window.$docsify.plugins || []).concat(function(hook) {
         hook.afterEach(function(html) {
             return html + '\n\n---\n*📅 最后更新：2026-09-05 | 维护：销售运营部*';
