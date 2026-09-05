@@ -3,8 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <title>ProTray 外贸知识库</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify/themes/vue.css">
+    <style>
+        .app-name-link { font-weight: 600 !important; }
+        .markdown-section h1 { font-size: 1.8rem !important; }
+        .markdown-section h2 { font-size: 1.4rem !important; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        .markdown-section table { display: table !important; width: 100% !important; }
+        @media (max-width: 768px) {
+            .markdown-section h1 { font-size: 1.4rem !important; }
+            .markdown-section h2 { font-size: 1.2rem !important; }
+        }
+        .markdown-section pre { background: #2d2d2d !important; border-radius: 6px !important; }
+        .markdown-section code { font-size: 0.85rem !important; }
+
+        /* ===== 手机/平板：折叠按钮移到右上角 ===== */
+        @media (max-width: 1024px) {
+            .sidebar-toggle {
+                position: fixed !important;
+                top: 12px !important;
+                right: 12px !important;
+                bottom: auto !important;
+                left: auto !important;
+                width: 44px !important;
+                height: 44px !important;
+                background: rgba(66, 185, 131, 0.95) !important;
+                border-radius: 50% !important;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.25) !important;
+                z-index: 9999 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                border: 2px solid rgba(255,255,255,0.3) !important;
+                padding: 0 !important;
+                transition: all 0.3s ease !important;
+            }
+            .sidebar-toggle:active {
+                transform: scale(0.92) !important;
+                background: rgba(66, 185, 131, 1) !important;
+            }
+            .sidebar-toggle span {
+                background: white !important;
+                height: 3px !important;
+                width: 20px !important;
+                border-radius: 4px !important;
+                position: absolute !important;
+                left: 12px !important;
+            }
+            .sidebar-toggle span:nth-child(1) { top: 14px !important; }
+            .sidebar-toggle span:nth-child(2) { top: 20px !important; }
+            .sidebar-toggle span:nth-child(3) { top: 26px !important; }
+            body.close .sidebar-toggle {
+                background: rgba(66, 185, 131, 1) !important;
+            }
+        }
+    </style>
 </head>
 <body>
 <div id="app"></div>
@@ -13,11 +66,10 @@
         name: 'ProTray 外贸知识库',
         repo: 'https://github.com/mcqwy/ProTray-Knowledge-Base',
         loadSidebar: '_sidebar.md',
-        subMaxLevel: 1,
+        subMaxLevel: 0,
         auto2top: true,
         hashbang: false,
-        sidebarDisplayLevel: 0,        // 0 = 全部折叠，1 = 展开一级
-        topMargin: 0,
+        sidebarDisplayLevel: 0,
         search: {
             placeholder: '🔍 搜索文档...',
             noData: '😅 没有找到相关内容'
@@ -32,7 +84,6 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-<!-- 侧边栏折叠插件（支持记忆） -->
 <script src="https://cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
 </body>
 </html>
