@@ -12,7 +12,6 @@
             content="width=device-width, initial-scale=1.0"
     >
 
-
     <!-- =====================================================
          Docsify Vue 主题
          ===================================================== -->
@@ -24,22 +23,20 @@
 
 
     <!-- =====================================================
-         ProTray 左侧栏折叠样式
+         ProTray 自定义样式
          ===================================================== -->
 
     <style>
 
         /* =====================================================
-           一级分类
+           左侧栏分类折叠
            ===================================================== */
 
         /*
-         * 一级分类的子菜单默认隐藏
+         * 所有有子菜单的分类默认隐藏子菜单
          */
-        .sidebar-nav
-        > ul
-        > li.protray-collapse-group
-        > ul {
+        .sidebar-nav li.protray-collapse-group > ul,
+        .sidebar-nav li.protray-sub-collapse-group > ul {
 
             display: none;
 
@@ -47,43 +44,43 @@
 
 
         /*
-         * 一级分类展开
+         * 展开状态
          */
-        .sidebar-nav
-        > ul
-        > li.protray-collapse-group.protray-expanded
-        > ul {
+        .sidebar-nav li.protray-collapse-group.protray-expanded > ul,
+        .sidebar-nav li.protray-sub-collapse-group.protray-expanded > ul {
 
             display: block;
 
         }
 
 
-        /*
-         * 一级分类标题
-         */
+        /* =====================================================
+           分类标题
+           ===================================================== */
+
         .sidebar-nav
-        > ul
-        > li.protray-collapse-group
+        li.protray-collapse-group
+        > .protray-folder-title,
+
+        .sidebar-nav
+        li.protray-sub-collapse-group
         > .protray-folder-title {
 
             cursor: pointer;
 
             user-select: none;
 
-            font-weight: 600;
-
             position: relative;
 
         }
 
 
-        /*
-         * 一级分类箭头
-         */
+        /* =====================================================
+           一级分类箭头
+           ===================================================== */
+
         .sidebar-nav
-        > ul
-        > li.protray-collapse-group
+        li.protray-collapse-group
         > .protray-folder-title::before {
 
             content: '▶';
@@ -96,18 +93,16 @@
 
             font-size: 10px;
 
-            transition:
-                    transform 0.2s ease;
+            transition: transform 0.2s ease;
 
         }
 
 
         /*
-         * 一级分类展开后的箭头
+         * 一级分类展开
          */
         .sidebar-nav
-        > ul
-        > li.protray-collapse-group.protray-expanded
+        li.protray-collapse-group.protray-expanded
         > .protray-folder-title::before {
 
             transform: rotate(90deg);
@@ -115,67 +110,10 @@
         }
 
 
-        /*
-         * 一级分类鼠标悬停
-         */
-        .sidebar-nav
-        > ul
-        > li.protray-collapse-group
-        > .protray-folder-title:hover {
-
-            color: #42b983;
-
-        }
-
-
-
         /* =====================================================
-           二级分类
+           二级分类箭头
            ===================================================== */
 
-        /*
-         * 二级分类默认隐藏
-         */
-        .sidebar-nav
-        li.protray-sub-collapse-group
-        > ul {
-
-            display: none;
-
-        }
-
-
-        /*
-         * 二级分类展开
-         */
-        .sidebar-nav
-        li.protray-sub-collapse-group.protray-expanded
-        > ul {
-
-            display: block;
-
-        }
-
-
-        /*
-         * 二级分类标题
-         */
-        .sidebar-nav
-        li.protray-sub-collapse-group
-        > .protray-folder-title {
-
-            cursor: pointer;
-
-            user-select: none;
-
-            position: relative;
-
-        }
-
-
-        /*
-         * 二级分类箭头
-         */
         .sidebar-nav
         li.protray-sub-collapse-group
         > .protray-folder-title::before {
@@ -190,14 +128,13 @@
 
             font-size: 9px;
 
-            transition:
-                    transform 0.2s ease;
+            transition: transform 0.2s ease;
 
         }
 
 
         /*
-         * 二级分类展开后的箭头
+         * 二级分类展开
          */
         .sidebar-nav
         li.protray-sub-collapse-group.protray-expanded
@@ -208,9 +145,14 @@
         }
 
 
-        /*
-         * 二级分类鼠标悬停
-         */
+        /* =====================================================
+           鼠标悬停
+           ===================================================== */
+
+        .sidebar-nav
+        li.protray-collapse-group
+        > .protray-folder-title:hover,
+
         .sidebar-nav
         li.protray-sub-collapse-group
         > .protray-folder-title:hover {
@@ -220,13 +162,9 @@
         }
 
 
-
-        /* =====================================================
-           普通文档链接
-
-           不修改 Docsify 原本的点击行为
-           ===================================================== */
-
+        /*
+         * 普通链接保持 Docsify 原来的行为
+         */
         .sidebar-nav a {
 
             cursor: pointer;
@@ -265,30 +203,24 @@
 
 
         /*
-         * 使用根目录 _sidebar.md
+         * 使用根目录 Sidebar
          */
         loadSidebar: '_sidebar.md',
 
 
         /*
          * =====================================================
-         * 解决子目录 _sidebar.md 404
-         * =====================================================
+         * 关键：
          *
-         * 无论当前页面在哪个目录，
-         * 都使用网站根目录的 _sidebar.md
+         * 无论当前页面在哪个子目录，
+         * 永远使用根目录的 _sidebar.md
          *
-         * 例如：
-         *
-         * /1_市场调研/调研指南.md
-         *
-         * 不再请求：
+         * 防止：
          *
          * /1_市场调研/_sidebar.md
          *
-         * 而是始终使用：
-         *
-         * /_sidebar.md
+         * 404
+         * =====================================================
          */
 
         alias: {
@@ -300,19 +232,22 @@
 
 
         /*
-         * 侧边栏层级
+         * Sidebar 只显示一级目录结构
+         *
+         * 这里不依赖 Docsify 自动展开目录。
+         * 我们自己控制折叠。
          */
         subMaxLevel: 1,
 
 
         /*
-         * 页面切换自动回到顶部
+         * 页面切换自动回顶部
          */
         auto2top: true,
 
 
         /*
-         * 不使用 #!
+         * 不使用 hashbang
          */
         hashbang: false,
 
@@ -373,14 +308,126 @@
                     '/7_ai工具相关/AI赋能外贸实战指南'
             }
 
-        ]
+        ],
+
+
+        /*
+         * =====================================================
+         * ★★★ 修复数字开头标题的锚点问题 ★★★
+         *
+         * 原来：
+         *
+         * # 6. 售后与复购篇
+         *
+         * 可能生成：
+         *
+         * id="6-售后与复购篇"
+         *
+         * 然后：
+         *
+         * querySelector('#6-售后与复购篇')
+         *
+         * 会报错。
+         *
+         * 现在：
+         *
+         * 6. 售后与复购篇
+         *
+         * 变成：
+         *
+         * h-6-售后与复购篇
+         *
+         * 以字母开头，因此是合法 CSS selector。
+         * =====================================================
+         */
+
+        slugify: function (text) {
+
+            /*
+             * 去除前后空格
+             */
+            var slug =
+                String(text || '')
+                    .trim()
+                    .toLowerCase();
+
+
+            /*
+             * 空格转换为 -
+             */
+            slug =
+                slug.replace(
+                    /\s+/g,
+                    '-'
+                );
+
+
+            /*
+             * Docsify 常见标点处理
+             *
+             * 保留：
+             *
+             * 中文
+             * 英文
+             * 数字
+             * -
+             */
+            slug =
+                slug.replace(
+                    /[^\w\u4e00-\u9fff\-]/g,
+                    ''
+                );
+
+
+            /*
+             * 连续 - 合并
+             */
+            slug =
+                slug.replace(
+                    /-+/g,
+                    '-'
+                );
+
+
+            /*
+             * 去掉开头和结尾 -
+             */
+            slug =
+                slug.replace(
+                    /^-+|-+$/g,
+                    ''
+                );
+
+
+            /*
+             * =================================================
+             * ★ 核心修复
+             *
+             * 如果 ID 是数字开头，
+             * 前面加 h-
+             * =================================================
+             */
+
+            if (
+                /^[0-9]/.test(slug)
+            ) {
+
+                slug =
+                    'h-' + slug;
+
+            }
+
+
+            return slug;
+
+        }
 
     };
 
 
 
     /* =========================================================
-       ProTray 左侧栏折叠系统
+       ProTray Sidebar 折叠系统
        ========================================================= */
 
     (function () {
@@ -388,19 +435,17 @@
         'use strict';
 
 
-        /*
-         * =====================================================
-         * localStorage 保存名称
-         * =====================================================
-         */
+        /* =====================================================
+           localStorage Key
+           ===================================================== */
 
         var STORAGE_KEY =
-            'protray-sidebar-collapse-state-v1';
+            'protray-sidebar-collapse-state-v2';
 
 
 
         /* =====================================================
-           读取保存的折叠状态
+           读取保存状态
            ===================================================== */
 
         function loadState() {
@@ -425,9 +470,9 @@
 
 
                 if (
-                    typeof state !== 'object'
+                    !state
                     ||
-                    state === null
+                    typeof state !== 'object'
                 ) {
 
                     return {};
@@ -441,7 +486,7 @@
             catch (error) {
 
                 console.warn(
-                    'ProTray：读取侧边栏状态失败',
+                    'ProTray：读取 Sidebar 状态失败',
                     error
                 );
 
@@ -454,7 +499,7 @@
 
 
         /* =====================================================
-           保存折叠状态
+           保存状态
            ===================================================== */
 
         function saveState() {
@@ -464,13 +509,12 @@
                 var state = {};
 
 
-                /*
-                 * 找到所有已经绑定的折叠分类
-                 */
                 var groups =
                     document.querySelectorAll(
-                        '.sidebar-nav .protray-collapse-group, ' +
-                        '.sidebar-nav .protray-sub-collapse-group'
+                        '.sidebar-nav ' +
+                        '.protray-collapse-group, ' +
+                        '.sidebar-nav ' +
+                        '.protray-sub-collapse-group'
                     );
 
 
@@ -485,7 +529,9 @@
 
 
                     var key =
-                        group.dataset.protrayKey;
+                        group.getAttribute(
+                            'data-protray-key'
+                        );
 
 
                     if (!key) {
@@ -512,7 +558,7 @@
             catch (error) {
 
                 console.warn(
-                    'ProTray：保存侧边栏状态失败',
+                    'ProTray：保存 Sidebar 状态失败',
                     error
                 );
 
@@ -557,15 +603,6 @@
 
         /* =====================================================
            获取分类标题
-
-           兼容：
-
-           <strong>
-           <p>
-           <div>
-           <a>
-
-           不假定 _sidebar.md 的 HTML 结构。
            ===================================================== */
 
         function getFolderTitle(li) {
@@ -585,7 +622,7 @@
 
 
                 /*
-                 * UL 是子菜单，不是标题
+                 * UL 是子菜单
                  */
                 if (
                     child.tagName === 'UL'
@@ -597,7 +634,7 @@
 
 
                 /*
-                 * P
+                 * 优先处理 P
                  */
                 if (
                     child.tagName === 'P'
@@ -633,7 +670,7 @@
 
 
                 /*
-                 * A 作为最后兼容方案
+                 * A
                  */
                 if (
                     child.tagName === 'A'
@@ -666,9 +703,7 @@
 
 
             return (
-                title.textContent
-                ||
-                ''
+                title.textContent || ''
             )
                 .replace(
                     /\s+/g,
@@ -681,17 +716,7 @@
 
 
         /* =====================================================
-           生成分类唯一 Key
-
-           使用：
-
-           一级分类：
-           top:战略决策
-
-           二级分类：
-           sub:业务资料库/工厂档案
-
-           这样即使名称相同也尽量避免冲突。
+           生成唯一 Key
            ===================================================== */
 
         function getGroupKey(
@@ -718,11 +743,15 @@
 
 
             /*
-             * 获取上级分类标题
+             * 找父级 LI
              */
+            var parentUl =
+                li.parentElement;
+
+
             var parentLi =
-                li.parentElement
-                    ? li.parentElement.parentElement
+                parentUl
+                    ? parentUl.parentElement
                     : null;
 
 
@@ -748,12 +777,66 @@
 
 
         /* =====================================================
-           关闭同级分类
+           恢复状态
+           ===================================================== */
 
-           注意：
-           这里只改变当前层级。
+        function restoreState(
+            li,
+            key,
+            savedState
+        ) {
 
-           不会删除 localStorage。
+            /*
+             * 如果之前保存过
+             */
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    savedState,
+                    key
+                )
+            ) {
+
+                if (
+                    savedState[key] === true
+                ) {
+
+                    li.classList.add(
+                        'protray-expanded'
+                    );
+
+                }
+                else {
+
+                    li.classList.remove(
+                        'protray-expanded'
+                    );
+
+                }
+
+
+                return;
+
+            }
+
+
+            /*
+             * =================================================
+             * ★ 第一次出现：
+             *
+             * 默认折叠
+             * =================================================
+             */
+
+            li.classList.remove(
+                'protray-expanded'
+            );
+
+        }
+
+
+
+        /* =====================================================
+           关闭同级其他分类
            ===================================================== */
 
         function closeSiblingGroups(
@@ -794,6 +877,9 @@
                 }
 
 
+                /*
+                 * 只处理折叠分类
+                 */
                 if (
                     sibling.classList.contains(
                         'protray-collapse-group'
@@ -810,8 +896,8 @@
 
 
                     /*
-                     * 如果关闭一级分类，
-                     * 顺便关闭里面的二级分类。
+                     * 如果关闭的是一级分类，
+                     * 同时关闭内部二级分类。
                      */
                     var innerGroups =
                         sibling.querySelectorAll(
@@ -842,65 +928,7 @@
 
 
         /* =====================================================
-           恢复当前分类状态
-           ===================================================== */
-
-        function restoreGroupState(
-            li,
-            key,
-            savedState
-        ) {
-
-            /*
-             * 有保存记录：
-             *
-             * true  = 展开
-             * false = 折叠
-             */
-            if (
-                Object.prototype.hasOwnProperty.call(
-                    savedState,
-                    key
-                )
-            ) {
-
-                if (
-                    savedState[key] === true
-                ) {
-
-                    li.classList.add(
-                        'protray-expanded'
-                    );
-
-                } else {
-
-                    li.classList.remove(
-                        'protray-expanded'
-                    );
-
-                }
-
-
-                return;
-
-            }
-
-
-            /*
-             * 没有保存记录：
-             *
-             * ★ 默认折叠
-             */
-            li.classList.remove(
-                'protray-expanded'
-            );
-
-        }
-
-
-
-        /* =====================================================
-           绑定一个折叠分类
+           绑定折叠分类
            ===================================================== */
 
         function bindCollapseGroup(
@@ -910,7 +938,7 @@
         ) {
 
             /*
-             * 找直属子菜单
+             * 获取子菜单
              */
             var submenu =
                 getDirectSubmenu(li);
@@ -919,9 +947,9 @@
             /*
              * 没有子菜单：
              *
-             * 这是普通文档链接。
+             * 普通文档链接
              *
-             * ★ 不处理。
+             * ★ 不处理
              */
             if (!submenu) {
 
@@ -931,7 +959,7 @@
 
 
             /*
-             * 找标题
+             * 获取标题
              */
             var title =
                 getFolderTitle(li);
@@ -948,7 +976,9 @@
              * 已经绑定过
              */
             if (
-                li.dataset.protrayBound === 'true'
+                li.getAttribute(
+                    'data-protray-bound'
+                ) === 'true'
             ) {
 
                 return;
@@ -957,7 +987,7 @@
 
 
             /*
-             * 获取唯一 Key
+             * 生成 Key
              */
             var key =
                 getGroupKey(
@@ -966,19 +996,20 @@
                 );
 
 
-            li.dataset.protrayKey =
-                key;
+            li.setAttribute(
+                'data-protray-key',
+                key
+            );
+
+
+            li.setAttribute(
+                'data-protray-bound',
+                'true'
+            );
 
 
             /*
-             * 标记已经绑定
-             */
-            li.dataset.protrayBound =
-                'true';
-
-
-            /*
-             * 添加对应 CSS class
+             * 添加 CSS Class
              */
             if (isTopLevel) {
 
@@ -986,7 +1017,8 @@
                     'protray-collapse-group'
                 );
 
-            } else {
+            }
+            else {
 
                 li.classList.add(
                     'protray-sub-collapse-group'
@@ -996,7 +1028,7 @@
 
 
             /*
-             * 给标题添加 CSS class
+             * 标题 Class
              */
             title.classList.add(
                 'protray-folder-title'
@@ -1004,9 +1036,9 @@
 
 
             /*
-             * ★ 恢复之前保存的状态
+             * 恢复状态
              */
-            restoreGroupState(
+            restoreState(
                 li,
                 key,
                 savedState
@@ -1022,9 +1054,15 @@
                 function (event) {
 
                     /*
-                     * 如果这个标题本身就是一个真正的链接，
-                     * 那么不要拦截。
+                     * =================================================
+                     * 如果标题本身是真正的链接：
+                     *
+                     * 不拦截。
+                     *
+                     * 这样不会破坏 Docsify 正常导航。
+                     * =================================================
                      */
+
                     if (
                         title.tagName === 'A'
                         &&
@@ -1040,7 +1078,7 @@
 
                     /*
                      * 分类标题不是文档链接，
-                     * 所以这里阻止默认行为。
+                     * 阻止默认行为。
                      */
                     event.preventDefault();
 
@@ -1048,9 +1086,9 @@
 
 
                     /*
-                     * 当前是否已经展开
+                     * 当前状态
                      */
-                    var expanded =
+                    var isExpanded =
                         li.classList.contains(
                             'protray-expanded'
                         );
@@ -1065,15 +1103,16 @@
 
 
                     /*
-                     * 当前分类切换
+                     * 切换当前分类
                      */
-                    if (expanded) {
+                    if (isExpanded) {
 
                         li.classList.remove(
                             'protray-expanded'
                         );
 
-                    } else {
+                    }
+                    else {
 
                         li.classList.add(
                             'protray-expanded'
@@ -1083,9 +1122,7 @@
 
 
                     /*
-                     * ★★★ 最重要 ★★★
-                     *
-                     * 每次点击以后立即保存。
+                     * ★ 立即保存
                      */
                     saveState();
 
@@ -1097,7 +1134,7 @@
 
 
         /* =====================================================
-           初始化整个侧边栏
+           初始化 Sidebar
            ===================================================== */
 
         function initSidebar() {
@@ -1116,14 +1153,14 @@
 
 
             /*
-             * 读取 localStorage
+             * 保存状态
              */
             var savedState =
                 loadState();
 
 
             /*
-             * 找根 UL
+             * 获取根 UL
              */
             var rootUl = null;
 
@@ -1183,10 +1220,6 @@
                 }
 
 
-                /*
-                 * 只有拥有子菜单的 LI
-                 * 才是分类。
-                 */
                 if (
                     getDirectSubmenu(topItem)
                 ) {
@@ -1224,7 +1257,7 @@
 
 
                 /*
-                 * 跳过一级分类
+                 * 一级已经处理
                  */
                 if (
                     item.parentElement === rootUl
@@ -1236,7 +1269,7 @@
 
 
                 /*
-                 * 有直属子菜单才处理
+                 * 有子菜单才处理
                  */
                 if (
                     getDirectSubmenu(item)
@@ -1257,10 +1290,10 @@
 
 
         /* =====================================================
-           启动
+           Docsify 初始化之后执行
            ===================================================== */
 
-        function startSidebar() {
+        function start() {
 
             setTimeout(
                 initSidebar,
@@ -1272,7 +1305,7 @@
 
 
         /* =====================================================
-           DOM 加载
+           页面加载
            ===================================================== */
 
         if (
@@ -1281,34 +1314,33 @@
 
             document.addEventListener(
                 'DOMContentLoaded',
-                startSidebar
+                start
             );
 
-        } else {
+        }
+        else {
 
-            startSidebar();
+            start();
 
         }
 
 
 
         /* =====================================================
-           监听 Docsify 动态 Sidebar
+           监听 Docsify Sidebar 动态变化
 
            Docsify 是 SPA：
 
            点击文档
            ↓
-           页面内容改变
+           路由变化
            ↓
-           Sidebar 可能重新渲染
+           Sidebar 可能重新生成
 
-           所以这里重新检查。
-
-           ★ 但不会重新设置折叠状态。
+           所以需要重新绑定。
            ===================================================== */
 
-        var observerTimer =
+        var checkTimer =
             setInterval(
                 function () {
 
@@ -1326,7 +1358,7 @@
 
 
                     clearInterval(
-                        observerTimer
+                        checkTimer
                     );
 
 
@@ -1337,12 +1369,16 @@
 
 
                     /*
-                     * 监听 Sidebar DOM
+                     * MutationObserver
                      */
                     var observer =
                         new MutationObserver(
                             function () {
 
+                                /*
+                                 * Docsify 修改 DOM 后，
+                                 * 等它完成再重新检查。
+                                 */
                                 setTimeout(
                                     initSidebar,
                                     100
@@ -1374,7 +1410,7 @@
 
 
 <!-- =========================================================
-     Docsify 核心
+     Docsify
      ========================================================= -->
 
 <script
@@ -1384,7 +1420,7 @@
 
 
 <!-- =========================================================
-     Docsify 搜索插件
+     Search
      ========================================================= -->
 
 <script
