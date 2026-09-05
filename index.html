@@ -17,9 +17,8 @@
         .markdown-section pre { background: #2d2d2d !important; border-radius: 6px !important; }
         .markdown-section code { font-size: 0.85rem !important; }
 
-        /* ===== 手机/平板：折叠按钮出现在导航栏右侧（红框位置） ===== */
+        /* ===== 手机/平板：折叠按钮出现在导航栏右侧 ===== */
         @media (max-width: 1024px) {
-            /* 让折叠按钮出现在导航栏右侧，而非浮动 */
             .sidebar-toggle {
                 position: fixed !important;
                 top: 8px !important;
@@ -44,7 +43,6 @@
                 transform: scale(0.92) !important;
                 background: rgba(66, 185, 131, 1) !important;
             }
-            /* 汉堡图标三条线 */
             .sidebar-toggle span {
                 background: white !important;
                 height: 2.5px !important;
@@ -57,27 +55,17 @@
             .sidebar-toggle span:nth-child(1) { top: 12px !important; }
             .sidebar-toggle span:nth-child(2) { top: 18px !important; }
             .sidebar-toggle span:nth-child(3) { top: 24px !important; }
-            /* 侧边栏打开时，按钮背景不变 */
             body.close .sidebar-toggle {
                 background: rgba(66, 185, 131, 1) !important;
             }
-            /* 搜索框让出右侧空间，防止与按钮重叠 */
             .search {
                 margin-right: 52px !important;
             }
-            /* 导航栏右侧菜单让出空间，防止与按钮重叠 */
             .app-nav {
                 margin-right: 56px !important;
             }
             .app-nav li:last-child {
                 margin-right: 8px !important;
-            }
-        }
-
-        /* ===== 桌面端保持左下角原样 ===== */
-        @media (min-width: 1025px) {
-            .sidebar-toggle {
-                /* 保持 Docsify 默认样式 */
             }
         }
     </style>
@@ -87,12 +75,15 @@
 <script>
     window.$docsify = {
         name: 'ProTray 外贸知识库',
-        // repo: 'https://github.com/mcqwy/ProTray-Knowledge-Base',   // ← 已注释：右上角 GitHub 链接
-        loadSidebar: '_sidebar.md',
-        subMaxLevel: 0,
+        // repo: 'https://github.com/mcqwy/ProTray-Knowledge-Base',   // ← 已注释
+        // ===== 强制从根目录加载侧边栏 =====
+        loadSidebar: function() {
+            return '/_sidebar.md';   // 始终返回根目录的侧边栏
+        },
+        subMaxLevel: 0,            // 侧边栏显示层级不受限制，但内容始终来自根目录
         auto2top: true,
         hashbang: false,
-        sidebarDisplayLevel: 0,
+        sidebarDisplayLevel: 0,    // 默认全部折叠
         search: {
             placeholder: '🔍 搜索文档...',
             noData: '😅 没有找到相关内容'
@@ -103,13 +94,11 @@
             { title: '📊 成交指南', path: '/外贸报价与成交指南' },
             { title: '🤖 AI 工具', path: '/7_ai工具相关/AI赋能外贸实战指南' }
         ],
-        // ===== 核心：每次点击菜单项后自动收起侧边栏 =====
+        // ===== 点击菜单后自动收起侧边栏（手机/平板模式） =====
         plugins: [
             function(hook, vm) {
                 hook.doneEach(function() {
-                    // 手机/平板模式下（宽度 ≤ 1024px），每次页面切换后自动收起侧边栏
                     if (window.innerWidth <= 1024) {
-                        // 给 body 添加 close 类，Docsify 会自动收起侧边栏
                         document.body.classList.add('close');
                     }
                 });
@@ -119,7 +108,6 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-<!-- 侧边栏折叠插件（支持记忆） -->
 <script src="https://cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
 </body>
 </html>
