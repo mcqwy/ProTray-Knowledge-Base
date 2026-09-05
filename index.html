@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -6,94 +5,834 @@
     <title>ProTray 外贸知识库</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify/themes/vue.css">
+    <!-- Docsify 默认主题 -->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/docsify/themes/vue.css"
+    >
+
+    <style>
+        /* =========================================================
+           ProTray 外贸知识库
+           左侧栏折叠样式
+           ========================================================= */
+
+        /* ---------------------------------------------------------
+           1. 一级分类默认折叠
+           --------------------------------------------------------- */
+
+        /* 一级菜单下面的子菜单默认隐藏 */
+        .sidebar-nav > ul > li > ul {
+            display: none;
+        }
+
+        /* 一级分类展开 */
+        .sidebar-nav > ul > li.protray-open > ul {
+            display: block;
+        }
+
+
+        /* ---------------------------------------------------------
+           2. 一级分类标题样式
+           --------------------------------------------------------- */
+
+        .sidebar-nav > ul > li > a {
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+        }
+
+
+        /* ---------------------------------------------------------
+           3. 一级分类右侧箭头
+           --------------------------------------------------------- */
+
+        .sidebar-nav > ul > li.protray-group > a::before {
+            content: '▶';
+
+            display: inline-block;
+
+            width: 16px;
+
+            margin-right: 4px;
+
+            font-size: 10px;
+
+            transition: transform 0.2s ease;
+        }
+
+
+        /* 展开以后箭头旋转 */
+        .sidebar-nav > ul > li.protray-group.protray-open > a::before {
+            transform: rotate(90deg);
+        }
+
+
+        /* ---------------------------------------------------------
+           4. 没有子菜单的项目不显示箭头
+           --------------------------------------------------------- */
+
+        .sidebar-nav > ul > li:not(.protray-group) > a::before {
+            content: '';
+
+            display: inline-block;
+
+            width: 20px;
+        }
+
+
+        /* ---------------------------------------------------------
+           5. 二级目录也支持折叠
+
+           例如：
+
+           📁 业务资料库
+               🏭 工厂档案
+                   目录索引
+                   资质证书清单
+
+               📦 产品资料
+                   目录索引
+                   产品目录
+           --------------------------------------------------------- */
+
+        .sidebar-nav li.protray-subgroup > ul {
+            display: none;
+        }
+
+        .sidebar-nav li.protray-subgroup.protray-open > ul {
+            display: block;
+        }
+
+
+        /* 二级分类箭头 */
+        .sidebar-nav li.protray-subgroup > a::before {
+            content: '▶';
+
+            display: inline-block;
+
+            width: 14px;
+
+            margin-right: 3px;
+
+            font-size: 9px;
+
+            transition: transform 0.2s ease;
+        }
+
+
+        /* 二级分类展开 */
+        .sidebar-nav li.protray-subgroup.protray-open > a::before {
+            transform: rotate(90deg);
+        }
+
+
+        /* ---------------------------------------------------------
+           6. 折叠动画
+           --------------------------------------------------------- */
+
+        .sidebar-nav ul {
+            transition: opacity 0.15s ease;
+        }
+
+
+        /* ---------------------------------------------------------
+           7. 鼠标悬停效果
+           --------------------------------------------------------- */
+
+        .sidebar-nav > ul > li.protray-group > a:hover,
+        .sidebar-nav li.protray-subgroup > a:hover {
+            color: #42b983;
+        }
+
+
+        /* ---------------------------------------------------------
+           8. 一级分类稍微加粗
+           --------------------------------------------------------- */
+
+        .sidebar-nav > ul > li.protray-group > a {
+            font-weight: 600;
+        }
+
+
+        /* ---------------------------------------------------------
+           9. 让侧边栏更紧凑
+           --------------------------------------------------------- */
+
+        .sidebar-nav > ul > li > a {
+            margin: 0;
+        }
+    </style>
 </head>
 
+
 <body>
+
 <div id="app"></div>
 
+
 <script>
+
+    /* =========================================================
+       Docsify 配置
+       ========================================================= */
+
     window.$docsify = {
 
-        // ==============================
-        // 基础配置
-        // ==============================
+        /* -----------------------------------------------------
+           网站名称
+           ----------------------------------------------------- */
+
         name: 'ProTray 外贸知识库',
+
+
+        /* -----------------------------------------------------
+           GitHub 仓库
+           ----------------------------------------------------- */
 
         repo: 'https://github.com/mcqwy/ProTray-Knowledge-Base',
 
-        // 根目录侧边栏
+
+        /* -----------------------------------------------------
+           全站使用根目录 _sidebar.md
+
+           ★ 解决：
+
+           /1_市场调研/_sidebar.md 404
+           /2_获客操作手册/_sidebar.md 404
+           /3_成交操作手册/_sidebar.md 404
+
+           等问题。
+           ----------------------------------------------------- */
+
         loadSidebar: '_sidebar.md',
 
-        // ==============================
-        // ★★★ 关键修复 ★★★
-        // ==============================
-        // 无论当前页面位于哪个目录，
-        // 都强制加载根目录的 _sidebar.md
-        //
-        // 否则进入：
-        // /1_市场调研/xxx.md
-        //
-        // Docsify 会自动请求：
-        // /1_市场调研/_sidebar.md
-        //
-        // 从而产生 404。
         alias: {
             '/.*/_sidebar.md': '/_sidebar.md'
         },
 
-        // 只显示侧边栏第一级标题
+
+        /* -----------------------------------------------------
+           侧边栏标题层级
+           ----------------------------------------------------- */
+
         subMaxLevel: 1,
 
-        // 页面跳转后自动回到顶部
+
+        /* -----------------------------------------------------
+           页面跳转自动回到顶部
+           ----------------------------------------------------- */
+
         auto2top: true,
 
-        // 不使用 #! 路由
+
+        /* -----------------------------------------------------
+           不使用 #!
+           ----------------------------------------------------- */
+
         hashbang: false,
 
-        // ==============================
-        // 搜索
-        // ==============================
+
+        /* -----------------------------------------------------
+           搜索
+           ----------------------------------------------------- */
+
         search: {
+
             placeholder: '🔍 搜索文档...',
+
             noData: '😅 没有找到相关内容',
 
-            // 最大搜索结果数量
             depth: 6,
 
-            // 是否隐藏搜索结果
             hideOtherSidebarContent: false
         },
 
-        // ==============================
-        // 顶部导航
-        // ==============================
+
+        /* -----------------------------------------------------
+           顶部导航
+           ----------------------------------------------------- */
+
         navbar: [
+
             {
                 title: '🏠 首页',
                 path: '/'
             },
+
             {
                 title: '📖 获客指南',
                 path: '/外贸获客全景指南'
             },
+
             {
                 title: '📊 成交指南',
                 path: '/外贸报价与成交指南'
             },
+
             {
                 title: '🤖 AI 工具',
                 path: '/7_ai工具相关/AI赋能外贸实战指南'
             }
+
         ]
     };
+
+
+    /* =========================================================
+       ProTray 左侧栏折叠系统
+       ========================================================= */
+
+    (function () {
+
+        'use strict';
+
+
+        /* -----------------------------------------------------
+           初始化一级菜单
+           ----------------------------------------------------- */
+
+        function initTopLevelGroups() {
+
+            var sidebar = document.querySelector('.sidebar-nav');
+
+            if (!sidebar) {
+                return;
+            }
+
+
+            var rootList = sidebar.querySelector(':scope > ul');
+
+            if (!rootList) {
+                return;
+            }
+
+
+            var groups = rootList.children;
+
+
+            for (var i = 0; i < groups.length; i++) {
+
+                var group = groups[i];
+
+
+                /*
+                 * 只处理 li
+                 */
+
+                if (group.tagName !== 'LI') {
+                    continue;
+                }
+
+
+                /*
+                 * 查找当前一级菜单的直属 ul
+                 */
+
+                var submenu = null;
+
+                for (var j = 0; j < group.children.length; j++) {
+
+                    if (group.children[j].tagName === 'UL') {
+
+                        submenu = group.children[j];
+
+                        break;
+                    }
+                }
+
+
+                /*
+                 * 没有子菜单
+                 */
+
+                if (!submenu) {
+
+                    group.classList.remove('protray-group');
+
+                    group.classList.remove('protray-open');
+
+                    continue;
+                }
+
+
+                /*
+                 * 有子菜单
+                 */
+
+                group.classList.add('protray-group');
+
+
+                /*
+                 * 找到标题链接
+                 */
+
+                var titleLink = null;
+
+                for (var k = 0; k < group.children.length; k++) {
+
+                    if (
+                        group.children[k].tagName === 'A'
+                    ) {
+
+                        titleLink = group.children[k];
+
+                        break;
+                    }
+                }
+
+
+                if (!titleLink) {
+                    continue;
+                }
+
+
+                /*
+                 * 防止 Docsify 每次刷新侧边栏时
+                 * 重复绑定 click 事件
+                 */
+
+                if (titleLink.dataset.protrayCollapseBound === 'true') {
+                    continue;
+                }
+
+
+                titleLink.dataset.protrayCollapseBound = 'true';
+
+
+                /*
+                 * 点击一级分类
+                 */
+
+                titleLink.addEventListener('click', function (event) {
+
+                    var currentGroup = this.parentElement;
+
+
+                    /*
+                     * 判断当前是不是一个真正的分类
+                     */
+
+                    if (
+                        !currentGroup.classList.contains(
+                            'protray-group'
+                        )
+                    ) {
+                        return;
+                    }
+
+
+                    /*
+                     * 阻止 Docsify 把分类标题
+                     * 当成普通链接处理
+                     */
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+
+                    /*
+                     * 当前是否已经展开
+                     */
+
+                    var isOpen =
+                        currentGroup.classList.contains(
+                            'protray-open'
+                        );
+
+
+                    /*
+                     * 关闭所有一级分类
+                     */
+
+                    for (var n = 0; n < groups.length; n++) {
+
+                        var otherGroup = groups[n];
+
+                        if (
+                            otherGroup !== currentGroup &&
+                            otherGroup.classList.contains(
+                                'protray-group'
+                            )
+                        ) {
+
+                            otherGroup.classList.remove(
+                                'protray-open'
+                            );
+
+                            /*
+                             * 同时关闭它里面的二级分类
+                             */
+
+                            var subGroups =
+                                otherGroup.querySelectorAll(
+                                    '.protray-subgroup'
+                                );
+
+                            for (
+                                var m = 0;
+                                m < subGroups.length;
+                                m++
+                            ) {
+
+                                subGroups[m].classList.remove(
+                                    'protray-open'
+                                );
+                            }
+                        }
+                    }
+
+
+                    /*
+                     * 切换当前分类
+                     */
+
+                    if (isOpen) {
+
+                        currentGroup.classList.remove(
+                            'protray-open'
+                        );
+
+                    } else {
+
+                        currentGroup.classList.add(
+                            'protray-open'
+                        );
+                    }
+
+                });
+            }
+
+
+            /*
+             * 初始化二级折叠菜单
+             */
+
+            initSubGroups(sidebar);
+        }
+
+
+        /* =====================================================
+           初始化二级菜单
+           ===================================================== */
+
+        function initSubGroups(sidebar) {
+
+            /*
+             * 查找所有存在 ul 的 li
+             */
+
+            var allItems =
+                sidebar.querySelectorAll('li');
+
+
+            for (var i = 0; i < allItems.length; i++) {
+
+                var item = allItems[i];
+
+
+                /*
+                 * 排除一级菜单
+                 */
+
+                if (
+                    item.parentElement &&
+                    item.parentElement.parentElement ===
+                    sidebar.querySelector(':scope > ul')
+                ) {
+
+                    continue;
+                }
+
+
+                /*
+                 * 查找直属 UL
+                 */
+
+                var submenu = null;
+
+                for (var j = 0; j < item.children.length; j++) {
+
+                    if (item.children[j].tagName === 'UL') {
+
+                        submenu = item.children[j];
+
+                        break;
+                    }
+                }
+
+
+                /*
+                 * 没有子菜单
+                 */
+
+                if (!submenu) {
+                    continue;
+                }
+
+
+                /*
+                 * 找标题链接
+                 */
+
+                var titleLink = null;
+
+                for (var k = 0; k < item.children.length; k++) {
+
+                    if (item.children[k].tagName === 'A') {
+
+                        titleLink = item.children[k];
+
+                        break;
+                    }
+                }
+
+
+                if (!titleLink) {
+                    continue;
+                }
+
+
+                /*
+                 * 标记为二级折叠组
+                 */
+
+                item.classList.add(
+                    'protray-subgroup'
+                );
+
+
+                /*
+                 * 防止重复绑定
+                 */
+
+                if (
+                    titleLink.dataset
+                        .protraySubCollapseBound === 'true'
+                ) {
+
+                    continue;
+                }
+
+
+                titleLink.dataset
+                    .protraySubCollapseBound = 'true';
+
+
+                /*
+                 * 点击二级分类
+                 */
+
+                titleLink.addEventListener(
+                    'click',
+                    function (event) {
+
+                        var currentItem =
+                            this.parentElement;
+
+
+                        /*
+                         * 阻止 Docsify 跳转
+                         */
+
+                        event.preventDefault();
+
+                        event.stopPropagation();
+
+
+                        /*
+                         * 当前状态
+                         */
+
+                        var isOpen =
+                            currentItem.classList.contains(
+                                'protray-open'
+                            );
+
+
+                        /*
+                         * 关闭同级其他二级分类
+                         */
+
+                        var parent = currentItem.parentElement;
+
+                        if (parent) {
+
+                            var siblings =
+                                parent.children;
+
+                            for (
+                                var n = 0;
+                                n < siblings.length;
+                                n++
+                            ) {
+
+                                var sibling = siblings[n];
+
+                                if (
+                                    sibling !== currentItem &&
+                                    sibling.classList.contains(
+                                        'protray-subgroup'
+                                    )
+                                ) {
+
+                                    sibling.classList.remove(
+                                        'protray-open'
+                                    );
+                                }
+                            }
+                        }
+
+
+                        /*
+                         * 切换当前二级菜单
+                         */
+
+                        if (isOpen) {
+
+                            currentItem.classList.remove(
+                                'protray-open'
+                            );
+
+                        } else {
+
+                            currentItem.classList.add(
+                                'protray-open'
+                            );
+                        }
+
+                    }
+                );
+            }
+        }
+
+
+        /* =====================================================
+           Docsify 加载完成后初始化
+           ===================================================== */
+
+        function start() {
+
+            /*
+             * 延迟一点执行，
+             * 确保 Docsify 已经把 _sidebar.md
+             * 渲染到页面。
+             */
+
+            setTimeout(
+                initTopLevelGroups,
+                300
+            );
+        }
+
+
+        /* =====================================================
+           页面第一次加载
+           ===================================================== */
+
+        if (
+            document.readyState === 'loading'
+        ) {
+
+            document.addEventListener(
+                'DOMContentLoaded',
+                start
+            );
+
+        } else {
+
+            start();
+        }
+
+
+        /* =====================================================
+           监听 Docsify 动态更新
+
+           Docsify 是 SPA，
+           点击 Markdown 页面以后不会重新加载整个网页，
+           所以需要监听 sidebar 的变化。
+           ===================================================== */
+
+        var observer = new MutationObserver(
+            function () {
+
+                setTimeout(
+                    initTopLevelGroups,
+                    100
+                );
+            }
+        );
+
+
+        /*
+         * 等待 sidebar 出现
+         */
+
+        var observerTimer =
+            setInterval(
+                function () {
+
+                    var sidebar =
+                        document.querySelector(
+                            '.sidebar-nav'
+                        );
+
+
+                    if (!sidebar) {
+                        return;
+                    }
+
+
+                    clearInterval(
+                        observerTimer
+                    );
+
+
+                    /*
+                     * 开始监听侧边栏 DOM
+                     */
+
+                    observer.observe(
+                        sidebar,
+                        {
+                            childList: true,
+                            subtree: true
+                        }
+                    );
+
+
+                    /*
+                     * 第一次初始化
+                     */
+
+                    initTopLevelGroups();
+
+                },
+                200
+            );
+
+    })();
+
 </script>
 
-<!-- Docsify -->
-<script src="https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
 
-<!-- 搜索插件 -->
-<script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+<!-- =========================================================
+     Docsify
+     ========================================================= -->
+
+<script
+        src="https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js">
+</script>
+
+
+<!-- =========================================================
+     Docsify 搜索插件
+     ========================================================= -->
+
+<script
+        src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js">
+</script>
 
 </body>
 </html>
