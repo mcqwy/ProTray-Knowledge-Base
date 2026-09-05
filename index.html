@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 
 <head>
+
     <meta charset="UTF-8">
 
     <title>ProTray 外贸知识库</title>
@@ -11,9 +12,11 @@
             content="width=device-width, initial-scale=1.0"
     >
 
+
     <!-- =====================================================
          Docsify Vue 主题
          ===================================================== -->
+
     <link
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/docsify/themes/vue.css"
@@ -23,6 +26,7 @@
     <!-- =====================================================
          ProTray 左侧栏折叠样式
          ===================================================== -->
+
     <style>
 
         /* =====================================================
@@ -30,10 +34,15 @@
            ===================================================== */
 
         /*
-         * 有子菜单的一级分类，默认隐藏子菜单
+         * 一级分类的子菜单默认隐藏
          */
-        .sidebar-nav > ul > li.protray-collapse-group > ul {
+        .sidebar-nav
+        > ul
+        > li.protray-collapse-group
+        > ul {
+
             display: none;
+
         }
 
 
@@ -44,7 +53,9 @@
         > ul
         > li.protray-collapse-group.protray-expanded
         > ul {
+
             display: block;
+
         }
 
 
@@ -63,6 +74,7 @@
             font-weight: 600;
 
             position: relative;
+
         }
 
 
@@ -86,6 +98,7 @@
 
             transition:
                     transform 0.2s ease;
+
         }
 
 
@@ -98,11 +111,12 @@
         > .protray-folder-title::before {
 
             transform: rotate(90deg);
+
         }
 
 
         /*
-         * 鼠标悬停
+         * 一级分类鼠标悬停
          */
         .sidebar-nav
         > ul
@@ -110,25 +124,14 @@
         > .protray-folder-title:hover {
 
             color: #42b983;
+
         }
 
 
 
         /* =====================================================
            二级分类
-
-           例如：
-
-           📁 业务资料库
-               🏭 工厂档案
-                   目录索引
-                   资质证书清单
-
-               📦 产品资料
-                   产品目录
-                   规格书模板
            ===================================================== */
-
 
         /*
          * 二级分类默认隐藏
@@ -138,6 +141,7 @@
         > ul {
 
             display: none;
+
         }
 
 
@@ -149,6 +153,7 @@
         > ul {
 
             display: block;
+
         }
 
 
@@ -164,6 +169,7 @@
             user-select: none;
 
             position: relative;
+
         }
 
 
@@ -186,6 +192,7 @@
 
             transition:
                     transform 0.2s ease;
+
         }
 
 
@@ -197,17 +204,19 @@
         > .protray-folder-title::before {
 
             transform: rotate(90deg);
+
         }
 
 
         /*
-         * 鼠标悬停
+         * 二级分类鼠标悬停
          */
         .sidebar-nav
         li.protray-sub-collapse-group
         > .protray-folder-title:hover {
 
             color: #42b983;
+
         }
 
 
@@ -215,12 +224,13 @@
         /* =====================================================
            普通文档链接
 
-           不修改它们的点击行为
+           不修改 Docsify 原本的点击行为
            ===================================================== */
 
         .sidebar-nav a {
 
             cursor: pointer;
+
         }
 
     </style>
@@ -255,25 +265,28 @@
 
 
         /*
-         * 使用根目录侧边栏
+         * 使用根目录 _sidebar.md
          */
         loadSidebar: '_sidebar.md',
 
 
         /*
          * =====================================================
-         * ★ 解决子目录 _sidebar.md 404
+         * 解决子目录 _sidebar.md 404
          * =====================================================
          *
-         * 例如进入：
+         * 无论当前页面在哪个目录，
+         * 都使用网站根目录的 _sidebar.md
+         *
+         * 例如：
          *
          * /1_市场调研/调研指南.md
          *
-         * Docsify 原本可能尝试：
+         * 不再请求：
          *
          * /1_市场调研/_sidebar.md
          *
-         * 现在强制全部指向：
+         * 而是始终使用：
          *
          * /_sidebar.md
          */
@@ -293,7 +306,7 @@
 
 
         /*
-         * 自动回到顶部
+         * 页面切换自动回到顶部
          */
         auto2top: true,
 
@@ -375,14 +388,149 @@
         'use strict';
 
 
+        /*
+         * =====================================================
+         * localStorage 保存名称
+         * =====================================================
+         */
+
+        var STORAGE_KEY =
+            'protray-sidebar-collapse-state-v1';
+
+
 
         /* =====================================================
-           获取元素的直属 UL
+           读取保存的折叠状态
+           ===================================================== */
+
+        function loadState() {
+
+            try {
+
+                var saved =
+                    localStorage.getItem(
+                        STORAGE_KEY
+                    );
+
+
+                if (!saved) {
+
+                    return {};
+
+                }
+
+
+                var state =
+                    JSON.parse(saved);
+
+
+                if (
+                    typeof state !== 'object'
+                    ||
+                    state === null
+                ) {
+
+                    return {};
+
+                }
+
+
+                return state;
+
+            }
+            catch (error) {
+
+                console.warn(
+                    'ProTray：读取侧边栏状态失败',
+                    error
+                );
+
+                return {};
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           保存折叠状态
+           ===================================================== */
+
+        function saveState() {
+
+            try {
+
+                var state = {};
+
+
+                /*
+                 * 找到所有已经绑定的折叠分类
+                 */
+                var groups =
+                    document.querySelectorAll(
+                        '.sidebar-nav .protray-collapse-group, ' +
+                        '.sidebar-nav .protray-sub-collapse-group'
+                    );
+
+
+                for (
+                    var i = 0;
+                    i < groups.length;
+                    i++
+                ) {
+
+                    var group =
+                        groups[i];
+
+
+                    var key =
+                        group.dataset.protrayKey;
+
+
+                    if (!key) {
+
+                        continue;
+
+                    }
+
+
+                    state[key] =
+                        group.classList.contains(
+                            'protray-expanded'
+                        );
+
+                }
+
+
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(state)
+                );
+
+            }
+            catch (error) {
+
+                console.warn(
+                    'ProTray：保存侧边栏状态失败',
+                    error
+                );
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           获取直属 UL
            ===================================================== */
 
         function getDirectSubmenu(li) {
 
-            var children = li.children;
+            var children =
+                li.children;
+
 
             for (
                 var i = 0;
@@ -400,32 +548,31 @@
 
             }
 
+
             return null;
+
         }
 
 
 
         /* =====================================================
-           获取分类标题元素
+           获取分类标题
 
-           你的 _sidebar.md 中分类标题通常类似：
+           兼容：
 
-           <li>
-               <p>
-                   <strong>📊 战略决策</strong>
-               </p>
+           <strong>
+           <p>
+           <div>
+           <a>
 
-               <ul>
-                   ...
-               </ul>
-           </li>
-
-           所以这里不能假设标题一定是 <a>。
+           不假定 _sidebar.md 的 HTML 结构。
            ===================================================== */
 
         function getFolderTitle(li) {
 
-            var children = li.children;
+            var children =
+                li.children;
+
 
             for (
                 var i = 0;
@@ -433,11 +580,12 @@
                 i++
             ) {
 
-                var child = children[i];
+                var child =
+                    children[i];
 
 
                 /*
-                 * UL 是菜单本身，不是标题
+                 * UL 是子菜单，不是标题
                  */
                 if (
                     child.tagName === 'UL'
@@ -449,7 +597,7 @@
 
 
                 /*
-                 * 如果是 P
+                 * P
                  */
                 if (
                     child.tagName === 'P'
@@ -461,19 +609,7 @@
 
 
                 /*
-                 * 如果是 DIV
-                 */
-                if (
-                    child.tagName === 'DIV'
-                ) {
-
-                    return child;
-
-                }
-
-
-                /*
-                 * 如果是 STRONG
+                 * STRONG
                  */
                 if (
                     child.tagName === 'STRONG'
@@ -485,9 +621,19 @@
 
 
                 /*
-                 * 如果是普通 A
-                 *
-                 * 这里只作为最后备用方案。
+                 * DIV
+                 */
+                if (
+                    child.tagName === 'DIV'
+                ) {
+
+                    return child;
+
+                }
+
+
+                /*
+                 * A 作为最后兼容方案
                  */
                 if (
                     child.tagName === 'A'
@@ -499,13 +645,115 @@
 
             }
 
+
             return null;
+
+        }
+
+
+
+        /* =====================================================
+           获取标题文字
+           ===================================================== */
+
+        function getTitleText(title) {
+
+            if (!title) {
+
+                return '';
+
+            }
+
+
+            return (
+                title.textContent
+                ||
+                ''
+            )
+                .replace(
+                    /\s+/g,
+                    ' '
+                )
+                .trim();
+
+        }
+
+
+
+        /* =====================================================
+           生成分类唯一 Key
+
+           使用：
+
+           一级分类：
+           top:战略决策
+
+           二级分类：
+           sub:业务资料库/工厂档案
+
+           这样即使名称相同也尽量避免冲突。
+           ===================================================== */
+
+        function getGroupKey(
+            li,
+            isTopLevel
+        ) {
+
+            var title =
+                getFolderTitle(li);
+
+
+            var text =
+                getTitleText(title);
+
+
+            if (isTopLevel) {
+
+                return (
+                    'top:' +
+                    text
+                );
+
+            }
+
+
+            /*
+             * 获取上级分类标题
+             */
+            var parentLi =
+                li.parentElement
+                    ? li.parentElement.parentElement
+                    : null;
+
+
+            var parentTitle =
+                parentLi
+                    ? getFolderTitle(parentLi)
+                    : null;
+
+
+            var parentText =
+                getTitleText(parentTitle);
+
+
+            return (
+                'sub:' +
+                parentText +
+                '/' +
+                text
+            );
+
         }
 
 
 
         /* =====================================================
            关闭同级分类
+
+           注意：
+           这里只改变当前层级。
+
+           不会删除 localStorage。
            ===================================================== */
 
         function closeSiblingGroups(
@@ -514,6 +762,7 @@
 
             var parent =
                 currentLi.parentElement;
+
 
             if (!parent) {
 
@@ -561,7 +810,8 @@
 
 
                     /*
-                     * 同时关闭内部已经展开的子分类
+                     * 如果关闭一级分类，
+                     * 顺便关闭里面的二级分类。
                      */
                     var innerGroups =
                         sibling.querySelectorAll(
@@ -592,12 +842,71 @@
 
 
         /* =====================================================
-           给一个分类绑定折叠功能
+           恢复当前分类状态
+           ===================================================== */
+
+        function restoreGroupState(
+            li,
+            key,
+            savedState
+        ) {
+
+            /*
+             * 有保存记录：
+             *
+             * true  = 展开
+             * false = 折叠
+             */
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    savedState,
+                    key
+                )
+            ) {
+
+                if (
+                    savedState[key] === true
+                ) {
+
+                    li.classList.add(
+                        'protray-expanded'
+                    );
+
+                } else {
+
+                    li.classList.remove(
+                        'protray-expanded'
+                    );
+
+                }
+
+
+                return;
+
+            }
+
+
+            /*
+             * 没有保存记录：
+             *
+             * ★ 默认折叠
+             */
+            li.classList.remove(
+                'protray-expanded'
+            );
+
+        }
+
+
+
+        /* =====================================================
+           绑定一个折叠分类
            ===================================================== */
 
         function bindCollapseGroup(
             li,
-            isTopLevel
+            isTopLevel,
+            savedState
         ) {
 
             /*
@@ -608,11 +917,11 @@
 
 
             /*
-             * 没有子菜单
+             * 没有子菜单：
              *
-             * 说明这是普通文档链接
+             * 这是普通文档链接。
              *
-             * ★ 绝对不能处理
+             * ★ 不处理。
              */
             if (!submenu) {
 
@@ -622,7 +931,7 @@
 
 
             /*
-             * 找分类标题
+             * 找标题
              */
             var title =
                 getFolderTitle(li);
@@ -636,7 +945,7 @@
 
 
             /*
-             * 已经绑定过就不重复绑定
+             * 已经绑定过
              */
             if (
                 li.dataset.protrayBound === 'true'
@@ -647,11 +956,29 @@
             }
 
 
-            li.dataset.protrayBound = 'true';
+            /*
+             * 获取唯一 Key
+             */
+            var key =
+                getGroupKey(
+                    li,
+                    isTopLevel
+                );
+
+
+            li.dataset.protrayKey =
+                key;
 
 
             /*
-             * 添加分类 CSS
+             * 标记已经绑定
+             */
+            li.dataset.protrayBound =
+                'true';
+
+
+            /*
+             * 添加对应 CSS class
              */
             if (isTopLevel) {
 
@@ -669,7 +996,7 @@
 
 
             /*
-             * 标记标题
+             * 给标题添加 CSS class
              */
             title.classList.add(
                 'protray-folder-title'
@@ -677,38 +1004,27 @@
 
 
             /*
-             * 默认折叠
+             * ★ 恢复之前保存的状态
              */
-            li.classList.remove(
-                'protray-expanded'
+            restoreGroupState(
+                li,
+                key,
+                savedState
             );
 
 
-            /*
-             * =================================================
-             * 点击分类标题
-             * =================================================
-             */
+            /* =================================================
+               点击分类标题
+               ================================================= */
 
             title.addEventListener(
                 'click',
                 function (event) {
 
                     /*
-                     * ★ 这里非常重要：
-                     *
-                     * 只有“分类标题”会进入这个事件。
-                     *
-                     * 普通 Markdown 文档链接完全不经过这里。
+                     * 如果这个标题本身就是一个真正的链接，
+                     * 那么不要拦截。
                      */
-
-
-                    /*
-                     * 如果标题本身是 A 标签，
-                     * 而且存在真实链接，
-                     * 不拦截它。
-                     */
-
                     if (
                         title.tagName === 'A'
                         &&
@@ -723,7 +1039,8 @@
 
 
                     /*
-                     * 分类标题只负责展开/折叠
+                     * 分类标题不是文档链接，
+                     * 所以这里阻止默认行为。
                      */
                     event.preventDefault();
 
@@ -742,11 +1059,13 @@
                     /*
                      * 关闭同级其他分类
                      */
-                    closeSiblingGroups(li);
+                    closeSiblingGroups(
+                        li
+                    );
 
 
                     /*
-                     * 切换当前分类
+                     * 当前分类切换
                      */
                     if (expanded) {
 
@@ -762,6 +1081,14 @@
 
                     }
 
+
+                    /*
+                     * ★★★ 最重要 ★★★
+                     *
+                     * 每次点击以后立即保存。
+                     */
+                    saveState();
+
                 }
             );
 
@@ -770,7 +1097,7 @@
 
 
         /* =====================================================
-           初始化侧边栏
+           初始化整个侧边栏
            ===================================================== */
 
         function initSidebar() {
@@ -789,9 +1116,17 @@
 
 
             /*
-             * 找到根 UL
+             * 读取 localStorage
+             */
+            var savedState =
+                loadState();
+
+
+            /*
+             * 找根 UL
              */
             var rootUl = null;
+
 
             for (
                 var i = 0;
@@ -818,6 +1153,7 @@
                 return;
 
             }
+
 
 
             /* =================================================
@@ -848,8 +1184,8 @@
 
 
                 /*
-                 * 只要有子菜单，
-                 * 就把它当成折叠分类。
+                 * 只有拥有子菜单的 LI
+                 * 才是分类。
                  */
                 if (
                     getDirectSubmenu(topItem)
@@ -857,7 +1193,8 @@
 
                     bindCollapseGroup(
                         topItem,
-                        true
+                        true,
+                        savedState
                     );
 
                 }
@@ -865,12 +1202,15 @@
             }
 
 
+
             /* =================================================
                二级 / 三级分类
                ================================================= */
 
             var allItems =
-                sidebar.querySelectorAll('li');
+                sidebar.querySelectorAll(
+                    'li'
+                );
 
 
             for (
@@ -896,7 +1236,7 @@
 
 
                 /*
-                 * 有子菜单才处理
+                 * 有直属子菜单才处理
                  */
                 if (
                     getDirectSubmenu(item)
@@ -904,7 +1244,8 @@
 
                     bindCollapseGroup(
                         item,
-                        false
+                        false,
+                        savedState
                     );
 
                 }
@@ -916,15 +1257,10 @@
 
 
         /* =====================================================
-           Docsify 加载完成以后执行
+           启动
            ===================================================== */
 
         function startSidebar() {
-
-            /*
-             * Docsify 是异步渲染侧边栏，
-             * 所以稍微等一下。
-             */
 
             setTimeout(
                 initSidebar,
@@ -936,7 +1272,7 @@
 
 
         /* =====================================================
-           页面加载
+           DOM 加载
            ===================================================== */
 
         if (
@@ -957,14 +1293,19 @@
 
 
         /* =====================================================
-           监听 Docsify 侧边栏变化
+           监听 Docsify 动态 Sidebar
 
-           Docsify 是 SPA。
+           Docsify 是 SPA：
 
-           点击文档后，
-           页面不会整体刷新。
+           点击文档
+           ↓
+           页面内容改变
+           ↓
+           Sidebar 可能重新渲染
 
-           所以需要监听 sidebar DOM。
+           所以这里重新检查。
+
+           ★ 但不会重新设置折叠状态。
            ===================================================== */
 
         var observerTimer =
@@ -990,13 +1331,13 @@
 
 
                     /*
-                     * 初始化
+                     * 第一次初始化
                      */
                     initSidebar();
 
 
                     /*
-                     * 监听 Docsify 后续变化
+                     * 监听 Sidebar DOM
                      */
                     var observer =
                         new MutationObserver(
@@ -1014,8 +1355,11 @@
                     observer.observe(
                         sidebar,
                         {
+
                             childList: true,
+
                             subtree: true
+
                         }
                     );
 
@@ -1030,7 +1374,7 @@
 
 
 <!-- =========================================================
-     Docsify
+     Docsify 核心
      ========================================================= -->
 
 <script
@@ -1040,7 +1384,7 @@
 
 
 <!-- =========================================================
-     Docsify 搜索
+     Docsify 搜索插件
      ========================================================= -->
 
 <script
