@@ -1,128 +1,265 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <title>ProTray 外贸知识库</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Docsify Vue 主题 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify/themes/vue.css">
+
+    <!-- =====================================================
+         ProTray 左侧栏折叠样式（完全自定义，不依赖插件）
+         ===================================================== -->
     <style>
-        .app-name-link { font-weight: 600 !important; }
-        .markdown-section h1 { font-size: 1.8rem !important; }
-        .markdown-section h2 { font-size: 1.4rem !important; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        .markdown-section table { display: table !important; width: 100% !important; }
-        @media (max-width: 768px) {
-            .markdown-section h1 { font-size: 1.4rem !important; }
-            .markdown-section h2 { font-size: 1.2rem !important; }
+        /* ===== 一级分类（默认折叠） ===== */
+        .sidebar-nav > ul > li.protray-collapse-group > ul {
+            display: none;
         }
-        .markdown-section pre { background: #2d2d2d !important; border-radius: 6px !important; }
-        .markdown-section code { font-size: 0.85rem !important; }
-
-        /* ===== 手机/平板：折叠按钮出现在导航栏右侧（红框位置） ===== */
-        @media (max-width: 1024px) {
-            /* 让折叠按钮出现在导航栏右侧，而非浮动 */
-            .sidebar-toggle {
-                position: fixed !important;
-                top: 8px !important;
-                right: 12px !important;
-                bottom: auto !important;
-                left: auto !important;
-                width: 40px !important;
-                height: 40px !important;
-                background: rgba(66, 185, 131, 0.95) !important;
-                border-radius: 50% !important;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
-                z-index: 9999 !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                border: 2px solid rgba(255,255,255,0.3) !important;
-                padding: 0 !important;
-                transition: all 0.3s ease !important;
-                cursor: pointer !important;
-            }
-            .sidebar-toggle:active {
-                transform: scale(0.92) !important;
-                background: rgba(66, 185, 131, 1) !important;
-            }
-            /* 汉堡图标三条线 */
-            .sidebar-toggle span {
-                background: white !important;
-                height: 2.5px !important;
-                width: 18px !important;
-                border-radius: 4px !important;
-                position: absolute !important;
-                left: 9px !important;
-                transition: all 0.3s ease !important;
-            }
-            .sidebar-toggle span:nth-child(1) { top: 12px !important; }
-            .sidebar-toggle span:nth-child(2) { top: 18px !important; }
-            .sidebar-toggle span:nth-child(3) { top: 24px !important; }
-            /* 侧边栏打开时，按钮背景不变 */
-            body.close .sidebar-toggle {
-                background: rgba(66, 185, 131, 1) !important;
-            }
-            /* 搜索框让出右侧空间，防止与按钮重叠 */
-            .search {
-                margin-right: 52px !important;
-            }
-            /* 导航栏右侧菜单让出空间，防止与按钮重叠 */
-            .app-nav {
-                margin-right: 56px !important;
-            }
-            .app-nav li:last-child {
-                margin-right: 8px !important;
-            }
+        .sidebar-nav > ul > li.protray-collapse-group.protray-expanded > ul {
+            display: block;
+        }
+        .sidebar-nav > ul > li.protray-collapse-group > .protray-folder-title {
+            cursor: pointer;
+            user-select: none;
+            font-weight: 600;
+            position: relative;
+        }
+        .sidebar-nav > ul > li.protray-collapse-group > .protray-folder-title::before {
+            content: '▶';
+            display: inline-block;
+            width: 18px;
+            margin-right: 2px;
+            font-size: 10px;
+            transition: transform 0.2s ease;
+        }
+        .sidebar-nav > ul > li.protray-collapse-group.protray-expanded > .protray-folder-title::before {
+            transform: rotate(90deg);
+        }
+        .sidebar-nav > ul > li.protray-collapse-group > .protray-folder-title:hover {
+            color: #42b983;
         }
 
-        /* ===== 桌面端保持左下角原样 ===== */
-        @media (min-width: 1025px) {
-            .sidebar-toggle {
-                /* 保持 Docsify 默认样式 */
-            }
+        /* ===== 二级分类（默认折叠） ===== */
+        .sidebar-nav li.protray-sub-collapse-group > ul {
+            display: none;
+        }
+        .sidebar-nav li.protray-sub-collapse-group.protray-expanded > ul {
+            display: block;
+        }
+        .sidebar-nav li.protray-sub-collapse-group > .protray-folder-title {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+        .sidebar-nav li.protray-sub-collapse-group > .protray-folder-title::before {
+            content: '▶';
+            display: inline-block;
+            width: 16px;
+            margin-right: 2px;
+            font-size: 9px;
+            transition: transform 0.2s ease;
+        }
+        .sidebar-nav li.protray-sub-collapse-group.protray-expanded > .protray-folder-title::before {
+            transform: rotate(90deg);
+        }
+        .sidebar-nav li.protray-sub-collapse-group > .protray-folder-title:hover {
+            color: #42b983;
+        }
+
+        /* ===== 普通文档链接（无修改） ===== */
+        .sidebar-nav a {
+            cursor: pointer;
         }
     </style>
 </head>
+
 <body>
+
 <div id="app"></div>
+
+
 <script>
+    /* =========================================================
+       Docsify 配置
+       ========================================================= */
     window.$docsify = {
         name: 'ProTray 外贸知识库',
-        // repo: 'https://github.com/mcqwy/ProTray-Knowledge-Base',   // ← 已注释：右上角 GitHub 链接
-        loadSidebar: '_sidebar.md',
+        repo: 'https://github.com/mcqwy/ProTray-Knowledge-Base',
+
+        // ★★★★★ 强制所有子目录 _sidebar.md 指向根目录 ★★★★★
         alias: {
             '/.*/_sidebar.md': '/_sidebar.md'
         },
-        subMaxLevel: 0,
+
+        loadSidebar: '_sidebar.md',
+        subMaxLevel: 1,
         auto2top: true,
         hashbang: false,
-        sidebarDisplayLevel: 0,
+
         search: {
             placeholder: '🔍 搜索文档...',
-            noData: '😅 没有找到相关内容'
+            noData: '😅 没有找到相关内容',
+            depth: 6,
+            hideOtherSidebarContent: false
         },
+
         navbar: [
             { title: '🏠 首页', path: '/' },
             { title: '📖 获客指南', path: '/外贸获客全景指南' },
             { title: '📊 成交指南', path: '/外贸报价与成交指南' },
             { title: '🤖 AI 工具', path: '/7_ai工具相关/AI赋能外贸实战指南' }
-        ],
-        // ===== 核心：每次点击菜单项后自动收起侧边栏 =====
-        plugins: [
-            function(hook, vm) {
-                hook.doneEach(function() {
-                    // 手机/平板模式下（宽度 ≤ 1024px），每次页面切换后自动收起侧边栏
-                    if (window.innerWidth <= 1024) {
-                        // 给 body 添加 close 类，Docsify 会自动收起侧边栏
-                        document.body.classList.add('close');
-                    }
-                });
-            }
         ]
     };
+
+
+    /* =========================================================
+       ProTray 自定义折叠逻辑（无自动收回行为）
+       ========================================================= */
+    (function () {
+        'use strict';
+
+        function getDirectSubmenu(li) {
+            var children = li.children;
+            for (var i = 0; i < children.length; i++) {
+                if (children[i].tagName === 'UL') return children[i];
+            }
+            return null;
+        }
+
+        function getFolderTitle(li) {
+            var children = li.children;
+            for (var i = 0; i < children.length; i++) {
+                var child = children[i];
+                if (child.tagName === 'UL') continue;
+                if (child.tagName === 'P' || child.tagName === 'DIV' || child.tagName === 'STRONG') return child;
+                if (child.tagName === 'A') return child; // 备用
+            }
+            return null;
+        }
+
+        function closeSiblingGroups(currentLi) {
+            var parent = currentLi.parentElement;
+            if (!parent) return;
+            var siblings = parent.children;
+            for (var i = 0; i < siblings.length; i++) {
+                var sibling = siblings[i];
+                if (sibling === currentLi) continue;
+                if (sibling.classList.contains('protray-collapse-group') ||
+                    sibling.classList.contains('protray-sub-collapse-group')) {
+                    sibling.classList.remove('protray-expanded');
+                    // 同时关闭内部已展开的子分类
+                    var innerGroups = sibling.querySelectorAll('.protray-expanded');
+                    for (var j = 0; j < innerGroups.length; j++) {
+                        innerGroups[j].classList.remove('protray-expanded');
+                    }
+                }
+            }
+        }
+
+        function bindCollapseGroup(li, isTopLevel) {
+            var submenu = getDirectSubmenu(li);
+            if (!submenu) return; // 没有子菜单，是普通文档链接
+
+            var title = getFolderTitle(li);
+            if (!title) return;
+
+            if (li.dataset.protrayBound === 'true') return;
+            li.dataset.protrayBound = 'true';
+
+            if (isTopLevel) {
+                li.classList.add('protray-collapse-group');
+            } else {
+                li.classList.add('protray-sub-collapse-group');
+            }
+            title.classList.add('protray-folder-title');
+            li.classList.remove('protray-expanded'); // 默认折叠
+
+            title.addEventListener('click', function (event) {
+                // 如果是带链接的 <a>，不拦截（让链接正常跳转）
+                if (title.tagName === 'A' && title.getAttribute('href') && title.getAttribute('href') !== '#') {
+                    return;
+                }
+                event.preventDefault();
+                event.stopPropagation();
+
+                var expanded = li.classList.contains('protray-expanded');
+                closeSiblingGroups(li);
+                if (expanded) {
+                    li.classList.remove('protray-expanded');
+                } else {
+                    li.classList.add('protray-expanded');
+                }
+            });
+        }
+
+        function initSidebar() {
+            var sidebar = document.querySelector('.sidebar-nav');
+            if (!sidebar) return;
+
+            var rootUl = null;
+            for (var i = 0; i < sidebar.children.length; i++) {
+                if (sidebar.children[i].tagName === 'UL') {
+                    rootUl = sidebar.children[i];
+                    break;
+                }
+            }
+            if (!rootUl) return;
+
+            // 一级分类
+            var topItems = rootUl.children;
+            for (var i = 0; i < topItems.length; i++) {
+                var topItem = topItems[i];
+                if (topItem.tagName !== 'LI') continue;
+                if (getDirectSubmenu(topItem)) {
+                    bindCollapseGroup(topItem, true);
+                }
+            }
+
+            // 二级及以下分类
+            var allItems = sidebar.querySelectorAll('li');
+            for (var i = 0; i < allItems.length; i++) {
+                var item = allItems[i];
+                if (item.parentElement === rootUl) continue; // 跳过一级
+                if (getDirectSubmenu(item)) {
+                    bindCollapseGroup(item, false);
+                }
+            }
+        }
+
+        function startSidebar() {
+            setTimeout(initSidebar, 300);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', startSidebar);
+        } else {
+            startSidebar();
+        }
+
+        // 监听 Docsify 切换页面后重新初始化折叠
+        var observerTimer = setInterval(function () {
+            var sidebar = document.querySelector('.sidebar-nav');
+            if (!sidebar) return;
+            clearInterval(observerTimer);
+            initSidebar();
+            var observer = new MutationObserver(function () {
+                setTimeout(initSidebar, 100);
+            });
+            observer.observe(sidebar, { childList: true, subtree: true });
+        }, 200);
+
+    })();
 </script>
+
+<!-- Docsify 核心库 -->
 <script src="https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+
+<!-- Docsify 搜索插件 -->
 <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-<!-- 侧边栏折叠插件（支持记忆） -->
-<script src="https://cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
+
+<!-- 注意：已移除 docsify-sidebar-collapse 插件，避免冲突和报错 -->
+
 </body>
 </html>
