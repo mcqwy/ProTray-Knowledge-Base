@@ -1,34 +1,100 @@
+```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <title>ProTray 外贸知识库</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify/themes/vue.css">
 </head>
+
 <body>
 <div id="app"></div>
+
 <script>
     window.$docsify = {
+
+        // ==============================
+        // 基础配置
+        // ==============================
         name: 'ProTray 外贸知识库',
+
         repo: 'https://github.com/mcqwy/ProTray-Knowledge-Base',
+
+        // 根目录侧边栏
         loadSidebar: '_sidebar.md',
-        subMaxLevel: 1,           // ← 关键：只在根目录加载侧边栏，不遍历子目录
+
+        // ==============================
+        // ★★★ 关键修复 ★★★
+        // ==============================
+        // 无论当前页面位于哪个目录，
+        // 都强制加载根目录的 _sidebar.md
+        //
+        // 否则进入：
+        // /1_市场调研/xxx.md
+        //
+        // Docsify 会自动请求：
+        // /1_市场调研/_sidebar.md
+        //
+        // 从而产生 404。
+        alias: {
+            '/.*/_sidebar.md': '/_sidebar.md'
+        },
+
+        // 只显示侧边栏第一级标题
+        subMaxLevel: 1,
+
+        // 页面跳转后自动回到顶部
         auto2top: true,
+
+        // 不使用 #! 路由
         hashbang: false,
+
+        // ==============================
+        // 搜索
+        // ==============================
         search: {
             placeholder: '🔍 搜索文档...',
-            noData: '😅 没有找到相关内容'
+            noData: '😅 没有找到相关内容',
+
+            // 最大搜索结果数量
+            depth: 6,
+
+            // 是否隐藏搜索结果
+            hideOtherSidebarContent: false
         },
+
+        // ==============================
+        // 顶部导航
+        // ==============================
         navbar: [
-            { title: '🏠 首页', path: '/' },
-            { title: '📖 获客指南', path: '/外贸获客全景指南' },
-            { title: '📊 成交指南', path: '/外贸报价与成交指南' },
-            { title: '🤖 AI 工具', path: '/7_ai工具相关/AI赋能外贸实战指南' }
+            {
+                title: '🏠 首页',
+                path: '/'
+            },
+            {
+                title: '📖 获客指南',
+                path: '/外贸获客全景指南'
+            },
+            {
+                title: '📊 成交指南',
+                path: '/外贸报价与成交指南'
+            },
+            {
+                title: '🤖 AI 工具',
+                path: '/7_ai工具相关/AI赋能外贸实战指南'
+            }
         ]
     };
 </script>
+
+<!-- Docsify -->
 <script src="https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+
+<!-- 搜索插件 -->
 <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+
 </body>
 </html>
+```
