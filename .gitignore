@@ -4,6 +4,7 @@
 
 # JetBrains IDEs（IntelliJ IDEA, PyCharm, WebStorm, PhpStorm, Rider 等）
 .idea/
+debug/
 *.iml
 *.iws
 *.ipr
