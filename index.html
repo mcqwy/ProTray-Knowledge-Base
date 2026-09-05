@@ -17,19 +17,20 @@
         .markdown-section pre { background: #2d2d2d !important; border-radius: 6px !important; }
         .markdown-section code { font-size: 0.85rem !important; }
 
-        /* ===== 手机/平板：折叠按钮移到右上角 ===== */
+        /* ===== 手机/平板：折叠按钮出现在导航栏右侧（红框位置） ===== */
         @media (max-width: 1024px) {
+            /* 让折叠按钮出现在导航栏右侧，而非浮动 */
             .sidebar-toggle {
                 position: fixed !important;
-                top: 12px !important;
+                top: 8px !important;
                 right: 12px !important;
                 bottom: auto !important;
                 left: auto !important;
-                width: 44px !important;
-                height: 44px !important;
+                width: 40px !important;
+                height: 40px !important;
                 background: rgba(66, 185, 131, 0.95) !important;
                 border-radius: 50% !important;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.25) !important;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
                 z-index: 9999 !important;
                 display: flex !important;
                 align-items: center !important;
@@ -37,24 +38,46 @@
                 border: 2px solid rgba(255,255,255,0.3) !important;
                 padding: 0 !important;
                 transition: all 0.3s ease !important;
+                cursor: pointer !important;
             }
             .sidebar-toggle:active {
                 transform: scale(0.92) !important;
                 background: rgba(66, 185, 131, 1) !important;
             }
+            /* 汉堡图标三条线 */
             .sidebar-toggle span {
                 background: white !important;
-                height: 3px !important;
-                width: 20px !important;
+                height: 2.5px !important;
+                width: 18px !important;
                 border-radius: 4px !important;
                 position: absolute !important;
-                left: 12px !important;
+                left: 9px !important;
+                transition: all 0.3s ease !important;
             }
-            .sidebar-toggle span:nth-child(1) { top: 14px !important; }
-            .sidebar-toggle span:nth-child(2) { top: 20px !important; }
-            .sidebar-toggle span:nth-child(3) { top: 26px !important; }
+            .sidebar-toggle span:nth-child(1) { top: 12px !important; }
+            .sidebar-toggle span:nth-child(2) { top: 18px !important; }
+            .sidebar-toggle span:nth-child(3) { top: 24px !important; }
+            /* 侧边栏打开时，按钮背景不变 */
             body.close .sidebar-toggle {
                 background: rgba(66, 185, 131, 1) !important;
+            }
+            /* 搜索框让出右侧空间，防止与按钮重叠 */
+            .search {
+                margin-right: 52px !important;
+            }
+            /* 导航栏右侧菜单让出空间，防止与按钮重叠 */
+            .app-nav {
+                margin-right: 56px !important;
+            }
+            .app-nav li:last-child {
+                margin-right: 8px !important;
+            }
+        }
+
+        /* ===== 桌面端保持左下角原样 ===== */
+        @media (min-width: 1025px) {
+            .sidebar-toggle {
+                /* 保持 Docsify 默认样式 */
             }
         }
     </style>
@@ -79,6 +102,18 @@
             { title: '📖 获客指南', path: '/外贸获客全景指南' },
             { title: '📊 成交指南', path: '/外贸报价与成交指南' },
             { title: '🤖 AI 工具', path: '/7_ai工具相关/AI赋能外贸实战指南' }
+        ],
+        // ===== 核心：每次点击菜单项后自动收起侧边栏 =====
+        plugins: [
+            function(hook, vm) {
+                hook.doneEach(function() {
+                    // 手机/平板模式下（宽度 ≤ 1024px），每次页面切换后自动收起侧边栏
+                    if (window.innerWidth <= 1024) {
+                        // 给 body 添加 close 类，Docsify 会自动收起侧边栏
+                        document.body.classList.add('close');
+                    }
+                });
+            }
         ]
     };
 </script>
