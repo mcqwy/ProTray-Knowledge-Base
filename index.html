@@ -3,36 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>ProTray 外贸知识库</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="description" content="外贸获客与AI自动化完整知识体系">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify/themes/vue.css">
-    <style>
-        .app-name-link { font-weight: 600 !important; }
-        .app-name-link img { height: 32px !important; }
-        .markdown-section h1 { font-size: 1.8rem !important; }
-        .markdown-section h2 { font-size: 1.4rem !important; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        .markdown-section table { display: table !important; width: 100% !important; }
-        .search input { border-radius: 4px !important; }
-        .sidebar-nav ul ul { padding-left: 20px !important; }
-        @media (max-width: 768px) {
-            .markdown-section h1 { font-size: 1.4rem !important; }
-            .markdown-section h2 { font-size: 1.2rem !important; }
-        }
-        .markdown-section pre { background: #2d2d2d !important; border-radius: 6px !important; }
-        .markdown-section code { font-size: 0.85rem !important; }
-        .hero { text-align: center; padding: 40px 0 20px 0; }
-        .hero h1 { font-size: 2.6rem !important; border-bottom: none !important; margin-bottom: 10px !important; }
-        .hero p { font-size: 1.2rem; color: #666; }
-    </style>
 </head>
 <body>
 <div id="app"></div>
-
 <script>
     window.$docsify = {
         name: 'ProTray 外贸知识库',
-        nameLink: '/',
         repo: 'https://github.com/mcqwy/ProTray-Knowledge-Base',
         loadSidebar: '_sidebar.md',
         subMaxLevel: 0,
@@ -40,87 +18,17 @@
         hashbang: false,
         search: {
             placeholder: '🔍 搜索文档...',
-            noData: '😅 没有找到相关内容',
-            depth: 3,
-            namespace: 'ProTray-Knowledge'
+            noData: '😅 没有找到相关内容'
         },
         navbar: [
             { title: '🏠 首页', path: '/' },
             { title: '📖 获客指南', path: '/外贸获客全景指南' },
             { title: '📊 成交指南', path: '/外贸报价与成交指南' },
-            { title: '🤖 AI 工具', path: '/7_ai工具相关/AI赋能外贸实战指南' },
-            { title: '📦 工具清单', path: '/7_ai工具相关/开源外贸工具全景记录' },
-            { title: '📁 全部文档', path: '/README' }
-        ],
-        sidebar: { '/': '_sidebar.md' },
-        themeColor: '#42b983',
-        formatUpdated: '{YYYY}-{MM}-{DD} {HH}:{mm}',
-        relativePath: true,
-
-        // ===== 核心：拦截 404 请求，静默返回空内容 =====
-        plugins: [
-            function(hook, vm) {
-                // 拦截 fetch 请求，对 _sidebar.md 和 README.md 的 404 静默处理
-                hook.beforeEach(function(content) {
-                    return content;
-                });
-
-                // 在 Docsify 加载完成后，拦截 XMLHttpRequest
-                var originalOpen = XMLHttpRequest.prototype.open;
-                XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
-                    var self = this;
-                    var originalOnReadyStateChange = this.onreadystatechange;
-
-                    this.onreadystatechange = function() {
-                        // 如果请求的是 _sidebar.md 或 README.md，且返回 404
-                        if (this.readyState === 4 && this.status === 404) {
-                            var urlStr = url.toString();
-                            if (urlStr.includes('_sidebar.md') || urlStr.includes('README.md')) {
-                                // 返回空内容，不触发错误
-                                Object.defineProperty(this, 'responseText', {
-                                    value: '',
-                                    writable: false
-                                });
-                                Object.defineProperty(this, 'response', {
-                                    value: '',
-                                    writable: false
-                                });
-                                // 模拟 200 状态，让 Docsify 认为文件存在但为空
-                                Object.defineProperty(this, 'status', {
-                                    value: 200,
-                                    writable: false
-                                });
-                            }
-                        }
-                        if (originalOnReadyStateChange) {
-                            originalOnReadyStateChange.apply(this, arguments);
-                        }
-                    };
-
-                    return originalOpen.apply(this, arguments);
-                };
-            }
+            { title: '🤖 AI 工具', path: '/7_ai工具相关/AI赋能外贸实战指南' }
         ]
     };
 </script>
-
 <script src="https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs/prism.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-json.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-python.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-javascript.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-bash.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-yaml.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
-
-<script>
-    window.$docsify.plugins = (window.$docsify.plugins || []).concat(function(hook) {
-        hook.afterEach(function(html) {
-            return html + '\n\n---\n*📅 最后更新：2026-09-05 | 维护：销售运营部*';
-        });
-    });
-</script>
 </body>
 </html>
