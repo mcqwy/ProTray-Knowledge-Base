@@ -1,0 +1,138 @@
+# ============================================
+# IDE / 编辑器配置
+# ============================================
+
+# JetBrains IDEs（IntelliJ IDEA, PyCharm, WebStorm, PhpStorm, Rider 等）
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.idea_modules/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+.idea/httpRequests/
+.idea/dataSources/
+.idea/dataSources.local.xml
+.idea/sqlDataSources.xml
+.idea/datasources.xml
+.idea/datasources.local.xml
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.*.swp
+
+# ============================================
+# 操作系统
+# ============================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+# Windows
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ============================================
+# Python
+# ============================================
+
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+*.log
+.coverage
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.tox/
+.venv/
+venv/
+env/
+ENV/
+
+# ============================================
+# Node.js
+# ============================================
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.tsbuildinfo
+
+# ============================================
+# 文档生成 / 临时文件
+# ============================================
+
+# Docsify 缓存
+_sidebar.md.bak
+_sidebar.md.tmp
+
+# 临时备份文件
+*.bak
+*.tmp
+*.temp
+*.swp
+
+# 日志文件
+*.log
+
+# ============================================
+# 数据库 / 敏感配置
+# ============================================
+
+*.db
+*.sqlite
+*.sqlite3
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+
+# ============================================
+# 项目特定
+# ============================================
+
+# 临时导出的 CSV/Excel
+*.tmp.xlsx
+*.tmp.csv
+temp_*.csv
+
+# 测试文件
+test_*.md
+*_test.md
